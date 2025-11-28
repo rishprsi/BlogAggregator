@@ -1,9 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
 
+	_ "github.com/lib/pq"
 	"github.com/rishprsi/BlogAggregator/internal/config"
 )
 
@@ -22,6 +24,8 @@ func main() {
 	currCommands := commands{
 		commandMap: make(map[string]func(*state, command) error),
 	}
+
+	db, err := sql.Open("postgres", currState.Config.DBUrl)
 
 	err = RunRepl(&currState, &currCommands)
 	if err != nil {
