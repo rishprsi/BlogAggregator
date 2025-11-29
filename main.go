@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/rishprsi/BlogAggregator/internal/config"
+	"github.com/rishprsi/BlogAggregator/internal/database"
 )
 
 func main() {
@@ -26,6 +27,9 @@ func main() {
 	}
 
 	db, err := sql.Open("postgres", currState.Config.DBUrl)
+	dbQueries := database.New(db)
+
+	currState.db = dbQueries
 
 	err = RunRepl(&currState, &currCommands)
 	if err != nil {

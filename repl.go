@@ -23,11 +23,14 @@ func RunRepl(s *state, cmds *commands) error {
 	registerCommands(cmds)
 	err := cmds.run(s, cmd)
 	if err != nil {
-		return fmt.Errorf("failed to login with the error:\n%v", err)
+		return fmt.Errorf("Call run failed:\n%v", err)
 	}
 	return nil
 }
 
 func registerCommands(cmds *commands) {
 	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerCreateUser)
+	cmds.register("reset", handlerResetUsers)
+	cmds.register("users", handlerListUsers)
 }
