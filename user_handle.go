@@ -58,11 +58,15 @@ func handlerCreateUser(s *state, cmd command) error {
 	return nil
 }
 
-func handlerResetUsers(s *state, cmd command) error {
+func handlerReset(s *state, cmd command) error {
 	ctx := context.Background()
 	err := s.db.ResetUsers(ctx)
 	if err != nil {
-		return fmt.Errorf("Failed to delete all users: %v", err)
+		return fmt.Errorf("failed to delete all users: %v", err)
+	}
+	err = s.db.ResetFeeds(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to delete all feeds: %v", err)
 	}
 	return nil
 }

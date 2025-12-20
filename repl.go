@@ -31,6 +31,11 @@ func RunRepl(s *state, cmds *commands) error {
 func registerCommands(cmds *commands) {
 	cmds.register("login", handlerLogin)
 	cmds.register("register", handlerCreateUser)
-	cmds.register("reset", handlerResetUsers)
+	cmds.register("reset", handlerReset)
 	cmds.register("users", handlerListUsers)
+	cmds.register("agg", handlerAggregator)
+	cmds.register("addfeed", handlerAddFeed)
+	cmds.register("feeds", handlerGetFeeds)
+	cmds.register("follow", handlerFeedFollow)
+	cmds.register("following", handlerGetUserFeeds)
 }

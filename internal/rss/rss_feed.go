@@ -25,8 +25,8 @@ type RSSItem struct {
 	PubDate     string `xml:"pubDate"`
 }
 
-func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
-	request, err := http.NewRequestWithContext(ctx, ".ChannelGet", feedURL, nil)
+func FetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
+	request, err := http.NewRequestWithContext(ctx, "GET", feedURL, nil)
 	if err != nil {
 		return &RSSFeed{}, fmt.Errorf("failed to create request with the error: %v", err)
 	}
@@ -41,7 +41,6 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 	if err != nil {
 		return &RSSFeed{}, fmt.Errorf("failed decoding xml: %v", err)
 	}
-
 	var feed RSSFeed
 	err = xml.Unmarshal(body, &feed)
 	if err != nil {
