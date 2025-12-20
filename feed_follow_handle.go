@@ -7,7 +7,7 @@ import (
 	"github.com/rishprsi/BlogAggregator/internal/database"
 )
 
-func handlerFeedFollow(s *state, cmd command) error {
+func handlerFeedFollow(s *state, cmd command, user database.User) error {
 	ctx := context.Background()
 	if len(cmd.args) < 1 {
 		return fmt.Errorf("incorrect usage of the command follow Usage: follow 'url'")
@@ -15,10 +15,6 @@ func handlerFeedFollow(s *state, cmd command) error {
 	feed, err := s.db.GetFeed(ctx, cmd.args[0])
 	if err != nil {
 		return fmt.Errorf("feed not found in the database: %v", err)
-	}
-	user, err := s.db.GetUser(ctx, s.Config.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("Current user not found in the database: %v", err)
 	}
 
 	feedFollowParams := database.CreateFeedFollowParams{
@@ -37,15 +33,31 @@ func handlerFeedFollow(s *state, cmd command) error {
 	return nil
 }
 
-func handlerGetUserFeeds(s *state, cmd command) error {
+func handlerGetUserFeeds(s *state, cmd command, user database.User) error {
 	ctx := context.Background()
-	feeds, err := s.db.GetFeedFollowsForUser(ctx, s.Config.CurrentUserName)
+	feeds, err := s.db.GetFeedFollowsForUser(ctx, user.Name)
 	if err != nil {
 		return fmt.Errorf("failed to get user feeds for user: %v with error: %v", s.Config.CurrentUserName, err)
 	}
 	fmt.Printf("The user %v is following the below feeds:\n", s.Config.CurrentUserName)
 	for _, feed := range feeds {
 		fmt.Printf("%v\n", feed.Feedname)
+	}
+	return nil
+}
+
+func handlerUnfollowFeed(s *state, cmd command, user database.User) error {
+	if len(cmd.args) < 1 {
+		return fmt.Errorf("incorrect usage of the command follow Usage: unfollow 'feed_id'")
+	}
+	ctx := context.Background()
+	params := database.UnfollowFeedParams{
+		Name: user.Name,
+		Url:  cmd.args[0],
+	}
+	err := s.db.UnfollowFeed(ctx, params)
+	if err != nil {
+		return fmt.Errorf("failed to get delete feeds for user: %v with error: %v", s.Config.CurrentUserName, err)
 	}
 	return nil
 }

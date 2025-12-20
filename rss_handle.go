@@ -23,16 +23,11 @@ func handlerAggregator(s *state, cmd command) error {
 	return nil
 }
 
-func handlerAddFeed(s *state, cmd command) error {
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.args) < 2 {
 		return fmt.Errorf("incorrect usage of addfeed, usage: addfeed 'name' 'url'")
 	}
 	ctx := context.Background()
-
-	user, err := s.db.GetUser(ctx, s.Config.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("the current user doesn't exist in the database")
-	}
 
 	createdFeed, err := addFeedHelper(s, cmd, user, ctx)
 	if err != nil {
